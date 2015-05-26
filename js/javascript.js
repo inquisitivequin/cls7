@@ -121,9 +121,13 @@ var donShopDat = '<div id="accordion">';
 
 for (var i = 0; i < donutShops.length; i++) {
   var donutShop = donutShops[i];
-  donShopDat += '<h2 class="heads">' + donutShop.local + '</h2>' + '<div>' +
-               '<p>' + 'Donuts per hour: ' + donutShop.getDonutsPerHour() + '</p>' +
-               '<p>' + 'Donuts per day: ' + donutShop.getDonutsPerDay() + '</p>' + '</div>';
+  var locId = donutShop.local;
+      locId = locId.replace(/\s/g, "X");
+  donShopDat += '<h2 class="heads">' + donutShop.local + '</h2>' +
+                '<div>' + '<p class="hour">' + 'Donuts per hour: ' +
+                donutShop.getDonutsPerHour() + '</p>' + '<p class="day" id="'+locId+
+                '">' + 'Donuts per day: ' + donutShop.getDonutsPerDay() + '</p>' +
+                '</div>';
 }
 
 donShopDat += '</div>';
@@ -173,25 +177,25 @@ $(function(){
   close.timepicker({
     onClose: function(dateText, inst) {
       var closeMrkr = close.datetimepicker("getDate"),
-        maxDate = new Date(closeMrkr.getTime());
-      maxDate.setHours(maxDate.getHours() - addHour);
+        timeMrkr = new Date(closeMrkr.getTime());
+      timeMrkr.setHours(timeMrkr.getHours() - addHour);
 
       if (open.val() != "") {
         var openMrkr = open.datetimepicker("getDate");
         openMrkr.setHours(openMrkr.getHours() + addHour);
 
         if (openMrkr > closeMrkr)
-          open.datetimepicker("setDate", maxDate);
+          open.datetimepicker("setDate", timeMrkr);
       }
       else {
-        open.datetimepicker("setDate", maxDate);
+        open.datetimepicker("setDate", timeMrkr);
       }
     },
     onSelect: function (selectedDateTime){
-      var maxDate = close.datetimepicker("getDate");
-      maxDate.setHours(maxDate.getHours() - addHour);
+      var timeMrkr = close.datetimepicker("getDate");
+      timeMrkr.setHours(timeMrkr.getHours() - addHour);
 
-      open.datetimepicker("option", "maxDate", maxDate);
+      open.datetimepicker("option", "timeMrkr", timeMrkr);
     }
   });
 });
@@ -200,24 +204,48 @@ var shopLocal = '<select id="local" name="Location">';
 
 for (var i = 0; i < donutShops.length; i++) {
   var donutShop = donutShops[i];
-  shopLocal += '<option value='+'"'+donutShop.local+'">' + donutShop.local +
+  shopLocal += '<option value='+'"'+donutShop.local+'"' + 'id='+i+'>' + donutShop.local +
                 '</option>';
 }
-
 donShopDat += '</select>';
+
 
 $('form').append(shopLocal);
 
 $("#sbmtBtn").click(function(e) {
   e.preventDefault();
-  var open, close, hoursOpp, local
+  var open, close, hoursOpp, local, localId
     open = $('#open');
+    open = open.val();
     close = $('#close');
+    close = close.val();
     local = $('#local');
     local = local.val();
+    localId = $('option:selected').attr('id');
+    localTxt = $('option:selected').text();
+    localTxt = localTxt.slice(0, -5).replace(/\s/g, "X");
 
-    // if ( open.val() != 0 && close.val() != 0) {
-    //   hoursOpp = open.getHours() - close.getHours();
-    //   console.log(hoursOpp);
+
+    console.log(localTxt);
+
+    var oc = [open, close];
+    var hld = [];
+    for (var i = 0; i < oc.length; i++) {
+    var tyme, mins, secs, dif
+        tyme = oc[i].split(":");
+        mins = tyme[0];
+        scnds = tyme[1];
+      scnds = parseInt(scnds, 10) + (parseInt(mins, 10) * 60);
+      hld.push(scnds);
     }
+
+    var dif = ((hld[1] * 60) - (hld[0] * 60)) / 3600;
+
+    var donutShop = donutShops[localId];
+        donutShop.hoursOp = dif;
+
+    var nwDonsHr = donutShop.getDonutsPerDay();
+
+    $('.day'+'#'+localTxt).text('Donuts per day: '+nwDonsHr);
+
 });
