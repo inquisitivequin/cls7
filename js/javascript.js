@@ -44,30 +44,6 @@ donutShops.push(slu);
 donutShops.push(wedgewood);
 donutShops.push(ballard);
 
-//----Old!!!! Iterates through array, constructs objects with donutShop
-//constructor, pushes objects to array
-/*Supplied shop data
-var donutShopData = [['Downtown', 8, 43, 4.50, 8],
-  ['Capitol Hill', 4, 37, 2.00, 8], ['South Lake Union', 9, 23, 6.33, 8],
-  ['Wedgewood', 2, 28, 1.25, 8], ['Ballard', 8, 58, 3.75, 8]];
-
-  Test for terminal
-
-Array of all donut shops
-
-
-IIFE that uses DonutShop constructor to create new DonutShop class objects
-from data in donutShopData array and pushes those objects into donutShops array
-var assembleDonutShops = (function() {
-  for (var i = 0; i < donutShopData.length; i++) {
-    var singleShop = donutShopData[i];
-    var donutShop = new DonutShop(singleShop[0], singleShop[1],
-                                  singleShop[2], singleShop[3],
-                                  singleShop[4]);
-    donutShops.push(donutShop);
-  }
-   }()); */
-
 //Empty DonutMaster constructor with two methods
 var DonutMaster = function() {
   //Method to add a new DonutShop object using DonutShop constructor
@@ -94,31 +70,8 @@ var DonutMaster = function() {
 //Creates an object of DonutMaster named dunkeldon
 var dunkeldon = new DonutMaster();
 
-//--------OLD!!! javascript to iterate through donutShops array, pulls values,
-//runs two methods, appends this to tBody
-/* On window load, locates tbody in DOM, creates new elements and appends
-them to the tbody
-window.onload = function() {
-  var tBody = document.getElementsByTagName('tbody')[0];
-
-  for (var i = 0; i < donutShops.length; i++) {
-    var row = document.createElement("tr");
-    var donutShop = donutShops[i];
-    var datum = [donutShop.local, donutShop.getDonutsPerHour(),
-                donutShop.getDonutsPerDay()];
-
-    for (var j = 0; j < datum.length; j++) {
-      var cell = document.createElement("td");
-      var cellData = document.createTextNode(datum[j]);
-      cell.appendChild(cellData);
-      row.appendChild(cell);
-      tBody.appendChild(row);
-    }
-  }
-}; */
-
+//Accordion list
 var donShopDat = '<div id="accordion">';
-
 for (var i = 0; i < donutShops.length; i++) {
   var donutShop = donutShops[i];
   var locId = donutShop.local;
@@ -129,24 +82,23 @@ for (var i = 0; i < donutShops.length; i++) {
                 '">' + 'Donuts per day: ' + donutShop.getDonutsPerDay() + '</p>' +
                 '</div>';
 }
-
 donShopDat += '</div>';
-
 $('content').append(donShopDat);
 
 $(function() {
   $( "#accordion" ).accordion();
 });
 
+//A dragable kenneth
 $("#kenneth").draggable();
 
-//Timepicker funtcion
+//Timepicker function
 $(function(){
   var open = $("#open"),
       close = $("#close"),
       addHour = 1;
 
-  //Open timepicker
+  //Timepicker for open
   open.timepicker({
     onClose: function(dateText, inst) {
       var openMrkr = open.datetimepicker("getDate"),
@@ -173,7 +125,7 @@ $(function(){
     }
   });
 
-  //close timepicker
+  //Timepicker for close
   close.timepicker({
     onClose: function(dateText, inst) {
       var closeMrkr = close.datetimepicker("getDate"),
@@ -200,8 +152,8 @@ $(function(){
   });
 });
 
+//Dropdown list of locations
 var shopLocal = '<select id="local" name="Location">';
-
 for (var i = 0; i < donutShops.length; i++) {
   var donutShop = donutShops[i];
   shopLocal += '<option value='+'"'+donutShop.local+'"' + 'id='+i+'>' + donutShop.local +
@@ -209,7 +161,8 @@ for (var i = 0; i < donutShops.length; i++) {
 }
 donShopDat += '</select>';
 
-
+//Changes donut shop object operation hours to time duration from timepickers
+//then updates donuts per day data from that on the location selected in the form
 $('form').append(shopLocal);
 
 $("#sbmtBtn").click(function(e) {
