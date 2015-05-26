@@ -4,16 +4,12 @@
   <meta charset="UTF-8">
   <title>Donut shop</title>
   <link rel="stylesheet" href="css/style.css">
-
-
- <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
-  <script src="jquery-timepicker"></script>
-
+  <!-- bower:css -->
+  <link rel='stylesheet' href='assets/bower/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.css' />
+  <!-- endbower -->
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-
   <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-
   <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
 </head>
 <body>
@@ -23,9 +19,17 @@
 
 
   <h1>Donut Shops</h1>
+  <form action="Donutshop.html" id="opHours">
+  <p> 
+  Open: <input id="open" type="text" class="input-small">
+  Close: <input id="close" type="text" class="input-small">
+  </p>
+  </form>
   <content></content>
 
-
+  <!-- bower:js -->
+  <script src="assets/bower/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.js"></script>
+  <!-- endbower -->
   <script src="js/javascript.js"></script>
 
 </body>

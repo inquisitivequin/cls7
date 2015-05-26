@@ -139,3 +139,6 @@ window.onload = function() {
   });
 
   $("#kenneth").draggable();
+
+  $('#open').timepicker();
+  $('#close').timepicker();
