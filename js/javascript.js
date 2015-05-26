@@ -117,83 +117,107 @@ window.onload = function() {
   }
 }; */
 
+var donShopDat = '<div id="accordion">';
 
+for (var i = 0; i < donutShops.length; i++) {
+  var donutShop = donutShops[i];
+  donShopDat += '<h2 class="heads">' + donutShop.local + '</h2>' + '<div>' +
+               '<p>' + 'Donuts per hour: ' + donutShop.getDonutsPerHour() + '</p>' +
+               '<p>' + 'Donuts per day: ' + donutShop.getDonutsPerDay() + '</p>' + '</div>';
+}
 
+donShopDat += '</div>';
 
+$('content').append(donShopDat);
 
-  var donShopDat = '<div id="accordion">';
+$(function() {
+  $( "#accordion" ).accordion();
+});
 
-  for (var i = 0; i < donutShops.length; i++) {
-    var donutShop = donutShops[i];
-    donShopDat += '<h2 class="heads">' + donutShop.local + '</h2>' + '<div>' +
-                 '<p>' + 'Donuts per hour: ' + donutShop.getDonutsPerHour() + '</p>' +
-                 '<p>' + 'Donuts per day: ' + donutShop.getDonutsPerDay() + '</p>' + '</div>';
-  }
+$("#kenneth").draggable();
 
-  donShopDat += '</div>';
+//Timepicker funtcion
+$(function(){
+  var open = $("#open"),
+      close = $("#close"),
+      addHour = 1;
 
-  $('content').append(donShopDat);
+  //Open timepicker
+  open.timepicker({
+    onClose: function(dateText, inst) {
+      var openMrkr = open.datetimepicker("getDate"),
+        timeMrkr = new Date(openMrkr.getTime());
 
-  $(function() {
-    $( "#accordion" ).accordion();
+      timeMrkr.setHours(timeMrkr.getHours() + addHour);
+
+      if (close.val() != "") {
+        var closeMrkr = close.datetimepicker("getDate");
+        closeMrkr.setHours(closeMrkr.getHours() - addHour);
+
+        if (openMrkr > closeMrkr)
+          close.datetimepicker("setDate", timeMrkr);
+      }
+      else {
+        close.datetimepicker("setDate", timeMrkr);
+      }
+    },
+    onSelect: function (selectedDateTime){
+      var timeMrkr = open.datetimepicker("getDate");
+      timeMrkr.setHours(timeMrkr.getHours() + addHour);
+
+      close.datetimepicker("option", "timeMrkr", timeMrkr );
+    }
   });
 
-  $("#kenneth").draggable();
+  //close timepicker
+  close.timepicker({
+    onClose: function(dateText, inst) {
+      var closeMrkr = close.datetimepicker("getDate"),
+        maxDate = new Date(closeMrkr.getTime());
+      maxDate.setHours(maxDate.getHours() - addHour);
 
+      if (open.val() != "") {
+        var openMrkr = open.datetimepicker("getDate");
+        openMrkr.setHours(openMrkr.getHours() + addHour);
 
-
-  $(function(){
-    var open = $("#open"),
-        close = $("#close"),
-        addHour = 1;
-
-    open.timepicker({
-      onClose: function(dateText, inst) {
-        var openMrkr = open.datetimepicker("getDate"),
-          timeMrkr = new Date(openMrkr.getTime());
-
-        timeMrkr.setHours(timeMrkr.getHours() + addHour);
-
-        if (close.val() != "") {
-          var closeMrkr = close.datetimepicker("getDate");
-          closeMrkr.setHours(closeMrkr.getHours() - addHour);
-
-          if (openMrkr > closeMrkr)
-            close.datetimepicker("setDate", timeMrkr);
-        }
-        else {
-          close.datetimepicker("setDate", timeMrkr);
-        }
-      },
-      onSelect: function (selectedDateTime){
-        var timeMrkr = open.datetimepicker("getDate");
-        timeMrkr.setHours(timeMrkr.getHours() + addHour);
-
-        close.datetimepicker("option", "timeMrkr", timeMrkr );
+        if (openMrkr > closeMrkr)
+          open.datetimepicker("setDate", maxDate);
       }
-    });
-          close.timepicker({
-            onClose: function(dateText, inst) {
-              var closeMrkr = close.datetimepicker("getDate"),
-                maxDate = new Date(closeMrkr.getTime());
-              maxDate.setHours(maxDate.getHours() - addHour);
+      else {
+        open.datetimepicker("setDate", maxDate);
+      }
+    },
+    onSelect: function (selectedDateTime){
+      var maxDate = close.datetimepicker("getDate");
+      maxDate.setHours(maxDate.getHours() - addHour);
 
-              if (open.val() != "") {
-                var openMrkr = open.datetimepicker("getDate");
-                openMrkr.setHours(openMrkr.getHours() + addHour);
+      open.datetimepicker("option", "maxDate", maxDate);
+    }
+  });
+});
 
-                if (openMrkr > closeMrkr)
-                  open.datetimepicker("setDate", maxDate);
-              }
-              else {
-                open.datetimepicker("setDate", maxDate);
-              }
-            },
-            onSelect: function (selectedDateTime){
-              var maxDate = close.datetimepicker("getDate");
-              maxDate.setHours(maxDate.getHours() - addHour);
+var shopLocal = '<select id="local" name="Location">';
 
-              open.datetimepicker("option", "maxDate", maxDate);
-            }
-          });
-        });
+for (var i = 0; i < donutShops.length; i++) {
+  var donutShop = donutShops[i];
+  shopLocal += '<option value='+'"'+donutShop.local+'">' + donutShop.local +
+                '</option>';
+}
+
+donShopDat += '</select>';
+
+$('form').append(shopLocal);
+
+$("#sbmtBtn").click(function(e) {
+  e.preventDefault();
+  var open, close, hoursOpp, local
+    open = $('#open');
+    close = $('#close');
+    local = $('#local');
+    local = local.val();
+
+    // if ( open.val() != 0 && close.val() != 0) {
+    //   hoursOpp = open.getHours() - close.getHours();
+    //   console.log(hoursOpp);
+    }
+});
