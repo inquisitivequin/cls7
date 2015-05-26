@@ -140,5 +140,60 @@ window.onload = function() {
 
   $("#kenneth").draggable();
 
-  $('#open').timepicker();
-  $('#close').timepicker();
+
+
+  $(function(){
+    var open = $("#open"),
+        close = $("#close"),
+        addHour = 1;
+
+    open.timepicker({
+      onClose: function(dateText, inst) {
+        var openMrkr = open.datetimepicker("getDate"),
+          timeMrkr = new Date(openMrkr.getTime());
+
+        timeMrkr.setHours(timeMrkr.getHours() + addHour);
+
+        if (close.val() != "") {
+          var closeMrkr = close.datetimepicker("getDate");
+          closeMrkr.setHours(closeMrkr.getHours() - addHour);
+
+          if (openMrkr > closeMrkr)
+            close.datetimepicker("setDate", timeMrkr);
+        }
+        else {
+          close.datetimepicker("setDate", timeMrkr);
+        }
+      },
+      onSelect: function (selectedDateTime){
+        var timeMrkr = open.datetimepicker("getDate");
+        timeMrkr.setHours(timeMrkr.getHours() + addHour);
+
+        close.datetimepicker("option", "timeMrkr", timeMrkr );
+      }
+    });
+          close.timepicker({
+            onClose: function(dateText, inst) {
+              var closeMrkr = close.datetimepicker("getDate"),
+                maxDate = new Date(closeMrkr.getTime());
+              maxDate.setHours(maxDate.getHours() - addHour);
+
+              if (open.val() != "") {
+                var openMrkr = open.datetimepicker("getDate");
+                openMrkr.setHours(openMrkr.getHours() + addHour);
+
+                if (openMrkr > closeMrkr)
+                  open.datetimepicker("setDate", maxDate);
+              }
+              else {
+                open.datetimepicker("setDate", maxDate);
+              }
+            },
+            onSelect: function (selectedDateTime){
+              var maxDate = close.datetimepicker("getDate");
+              maxDate.setHours(maxDate.getHours() - addHour);
+
+              open.datetimepicker("option", "maxDate", maxDate);
+            }
+          });
+        });
